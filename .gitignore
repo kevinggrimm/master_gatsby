@@ -1,0 +1,5 @@
+*.cache
+*.env
+*.vscode
+sanity/node_modules/*
+gatsby/node_modules/*
