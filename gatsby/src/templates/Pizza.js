@@ -2,6 +2,7 @@ import React from 'react';
 import { graphql } from 'gatsby';
 import Img from 'gatsby-image';
 import styled from 'styled-components';
+import SEO from '../components/SEO.js';
 
 const PizzaGrid = styled.div`
   display: grid;
@@ -9,20 +10,26 @@ const PizzaGrid = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 `;
 
+// TIP -- When adding images, it is likely that at some point you will delete the image. That will cause the entire page to break because it is looking for an image that does not exist
+// SOLUTION -- Add `?` after each. It will make sure that pizza.image. exists before going deeper into the branch. This is called "nested chaining"
+// Previously you had to check if all of these things existed. Gatsby is set up under the hood to convert these into a long drawn-out if statement
 export default function SinglePizzaPage({ data: { pizza } }) {
   console.log(pizza);
   return (
-    <PizzaGrid>
-      <Img fluid={pizza.image.asset.fluid} />
-      <div>
-        <h2 className="mark">{pizza.name}</h2>
-        <ul>
-          {pizza.toppings.map((topping) => (
-            <li key={topping.id}>{topping.name}</li>
-          ))}
-        </ul>
-      </div>
-    </PizzaGrid>
+    <>
+      <SEO title={pizza.name} image={pizza.image?.asset?.fluid?.src} />
+      <PizzaGrid>
+        <Img fluid={pizza.image.asset.fluid} />
+        <div>
+          <h2 className="mark">{pizza.name}</h2>
+          <ul>
+            {pizza.toppings.map((topping) => (
+              <li key={topping.id}>{topping.name}</li>
+            ))}
+          </ul>
+        </div>
+      </PizzaGrid>
+    </>
   );
 }
 

@@ -9,14 +9,17 @@ dotenv.config({ path: '.env' });
 
 // NOTE: Wes added a tweak in package.json --> scripts --> build to allow for export default instead of module.exports
 // Gatsby is going to implement this. After that it will be Gatsby build
+// NOTE -- You can also probably put this stuff into a sanity panel (store-specific settings)
 export default {
   siteMetadata: {
     title: `Slicks Slices`,
     siteUrl: `https://gatsby.pizza`,
     description: `The best pizza in all the land!`,
+    twitter: '@slicksSlices',
   },
   plugins: [
     'gatsby-plugin-styled-components',
+    'gatsby-plugin-react-helmet',
     // https://www.gatsbyjs.com/plugins/gatsby-source-sanity/?=gatsby-source-sanity
     {
       // this is the name of the plugin you are adding
