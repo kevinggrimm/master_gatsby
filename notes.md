@@ -838,13 +838,32 @@
 - Adding to `order.js`
 - Loop through menu; loop over everything an
   - Can use a **page Query** (on a page) or a **Static query** (no specific variable)
-  -
 
 ## 35 - Styling our Order Form
 
+### Overview
+
+- Going to keep styles in a separate file
+- In styles, create `OrderStyles.js`
+  - This is for the fieldsets **menu** and **order**
+- Also want to style the individual pizzas
+  - Create another page in **Styles** called `MenuItemStyles.js`
+
 ## 36 - Custom Hook for our Order Form
 
+### Overview
+
+- When someone clicks one of the buttons, we want to add that to our order
+- Going to create a custom hook with custom state to manage
+- Creating `usePizza.js` in utils
+- In **components**, we are going to make a new component that holds the displaying of order items
+  - File `PizzaOrder.js`
+
 ## 37 - Calculating our Order Total
+
+### Overview
+
+-
 
 # Module 11 - Serverless Functions
 
