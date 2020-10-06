@@ -861,27 +861,130 @@
 
 ## 37 - Calculating our Order Total
 
-### Overview
-
--
-
 # Module 11 - Serverless Functions
 
 ## 38 - Moving our Order State to React Context with a Custom Provider
 
+### Overview
+
+- The state we are saving this in exists in our order page
+- When we navigate away, Gatsby will unmount and remount the components - thus any state is lost
+- To _maintain_ state across page changes, you need to put that state at the highest level in Gatsby so that it doesn't unmount and remount
+
+### Gatsby-browser.js
+
+- There is a hook called `wrapRootElement` that allows us to wrap the actual Gatsby Root
+- In React dev tools, can see the **Root** element
+  - Only element on the page that stays there
+  - All other elements mount and remount when you switch pages
+  - Wrapping around the root element allow us to persist that data
+- How to do that:
+  - We are currently sticking state into a hook at an order level. Need to do it at a root level
+  - Will stick all of the data into **context**
+    - Allows us to store data at a **high level** and access it at a **lower level** w/o using props
+  - Create a new filed called `components/OrderContext.js`
+  - In `gatsby-browser.js`, export a function `wrapRootElement`
+  - Once added to `gatsby-browser.js`, the **wrapRootElement** must also be added to `gatsby-ssr.js`
+- Now, how do we access that state at a **deeper** level?
+  - Go to `usePizza.js` hook
+  - Calling the function `useContext(OrderContext)`, which takes in **OrderContext** as an argument
+
+### Refreshing the Page
+
+- Data **will** disappear on a page refresh
+- Can stick into localStorage and pull it back in when it mounts
+
+### Creating Unique Keys
+
+- Need a unique key since there can be identical pizzas
+- Use the index
+
 ## 39 - An Intro To Serverless Functions
+
+### Overview
+
+- When you build Gatsby, it uses HTMl, CSS, and JS to handle custom functionality
+- Doing things on the backend is challenging
+  - Sanity handles the backend
+  - What about sending email? Needs to happen on the server-side
+- Gatsby works well with serverless functions (Lambda)
+  - Similar to running a Node server, except it runs only for the duration of code execution
+  - Going to be using Netlify functions (hosts serverless functions)
+  - Can host wherever you want
+
+### Steps
+
+- Make a new folder `functions`
+- Make a new file `netlify.toml` in the **root** of your directory
+  - Need to tell Netlify where your serverless functions live
+- Inspect `package.json`
+
+  - We have been running `npm start`, which runs `npm develop` which then runs `gatsby develop`
+  - We now need to run `npm run netlify` which will run `netlify dev`
+    - Both will run `npm run start` under the hook and set itself up properly for running serverless functions
+
+- Kill the gatsby build
+
+  - Run `npm run netlify`
+  - Will provide a URL where we can run the website off of (localhost:8888)
+  - Netlfy dev will proxy gatsby for us
+  - **PROBLEM:** --> Ran into an error when attempting to run `npm run netlify`:
+    - _Error: ENOENT: no such file or directory, open '/Users/kevingrimm\_/Desktop/LEARN_JAVASCRIPT/GATSBY/master-gatsby/starter-files/gatsby/node_modules/netlify-redirector/lib/redirects.wasm'_
+    - Googled around / tried different options but didn't have any luck with the command.
+    - **SOLUTION:** Follow steps in this [Blog Post](https://joshwcomeau.com/gatsby/using-netlify-functions-with-gatsby/) and execute `netlify dev`
+
+- Make the first serverless function
+  - For each function we have, we want to create a new folder
+  - Inside of that, create a .js folder that is the **same name** as the folder that it is in
+  - Here we code the handler
+- To visit the URL:
+  1. Go to **http://localhost:8888/.netlify/functions/hello**
+
+### What We Are Doing
+
+- Creating a function placeorder with **nodemailer** to connect to an external email service
+- Create a new folder and file `placeOrder`
+- **NOTE:** Sometimes your serverless functions are so large that you want to have your own package.json for your serverless
+  - Go into the folder `placeOrder`
+  - Netlify facilitates this with `npm init` to create a **package.json** (press _Enter_ through options)
+  - Then, execute `npm i nodemailer` --> allows us to send email w/ JS
+- Now flesh out `placeOrder.js` function
+
+### Configuring Ethereal.email in Handler
+
+- Set up a new account at **https://ethereal.email**
+- Code functionality
+  - `const transporter = nodemailer.createTransport({...})`
+  - `const info = await transporter.sendMail({` _(within handler)_
+- For the **return** component, can use `JSON.stringify(info)` to inspect results
+- View mail at **Ethereal --> Messages**
+- **NOTE:** Besides swapping out credentials, there is **no difference** between Ethereal and a transactional email service
 
 ## 40 - Modifying our Custom Hook to send the order data
 
+### Overview
+
+- How do we take the users order from the client, send it to the serverless function, and then template out the HTMl that displays what they have in their order
+
 ## 41 - Coding our Serverless Function
+
+### Overview
 
 ## 42 - Setting Error, Loading and Success States
 
+### Overview
+
 ## 43 - Creating a Honey Pot to defend against bots
+
+### Overview
 
 ## 44 - Creating a one-off Store Settings Page
 
+### Overview
+
 ## 45 - Custom Hook for Client Side Data Fetching
+
+### Overview
 
 # Module 12 - Client Side Data
 
