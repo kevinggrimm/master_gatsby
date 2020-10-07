@@ -923,7 +923,7 @@
   - We now need to run `npm run netlify` which will run `netlify dev`
     - Both will run `npm run start` under the hook and set itself up properly for running serverless functions
 
-- Kill the gatsby build
+- From the `gatsby` folder, kill the gatsby build
 
   - Run `npm run netlify`
   - Will provide a URL where we can run the website off of (localhost:8888)
@@ -966,9 +966,37 @@
 
 - How do we take the users order from the client, send it to the serverless function, and then template out the HTMl that displays what they have in their order
 
+### Steps
+
+- Go into `usePizza.js` hook
+  - Need to add new state
+    - handle errors
+    - handle loading state
+    - handle returned messages
+- Back in `order.js`
+  - Destructure the new functionality passed into the hook
+- Back in `usePizza.js`
+  - Need to create a handler for when someone clicks on the "Order" button
+  - Called `submitOrder`
+- Effect of `submitOrder`
+  - Executes a **SyntheticEvent**
+  - Changes the text on the button to reflect the changed state in `loading`
+- Configure a **body** var which contains order, name + email info
+- Create a new function to modify the `order` object (currently returns ID + pizza size)
+  - `attachnameAndPrices.js` in _utils_
+- Send the data to the server upon checkout
+
 ## 41 - Coding our Serverless Function
 
 ### Overview
+
+- Open up `placeOrder.js` and open handler
+  - Adding in logic for required fields. Logging them for initial visiblity
+  - You should see that the function is running within the **netlify terminal**
+  - **NOTE:** If nothing shows up, kill netlify and restart with `netlify dev`
+  - Within a for loop of **required fields** we are checking that each is included within the body
+    - If not included, return an error message
+    - Go to **Network** --> **placeOrder** --> **Response** --> message from bad results is displayed there
 
 ## 42 - Setting Error, Loading and Success States
 
