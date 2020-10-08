@@ -1,5 +1,8 @@
 const nodemailer = require('nodemailer');
 
+// Note -- validation should be done on the server side
+// and be done before going into a database
+
 // We arent in React, so cant use React for this
 // There are frameworks to use React for email, however
 // Feel free to write CSS within <style> tags
@@ -44,9 +47,19 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Add function to extend handler duration
+// This is only for testing - dont need in prod
+function wait(ms = 0) {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 // code the handler
 // it is export.handler because it's common JS and not ES6 modules
 exports.handler = async (event, context) => {
+  // Can remove the await wait() afterr testing
+  // await wait(5000);
   // should return the body of the statement
   // TIP -- This will display `[object Object]` within the Netlify Terminal
   // This means that your object was turned into a String without being properly stringified
@@ -54,7 +67,17 @@ exports.handler = async (event, context) => {
   const body = JSON.parse(event.body);
   // OTHER BUG -- Cannot test netlify on localhost:8000 -- this will cause a CORS error. Test on localhost:8888
 
-  console.log(body);
+  // check if they have filled out the honeypot
+  if (body.pestoSauce) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        message: 'Boop bloop bleep blip blop later skater',
+      }),
+    };
+  }
+
+  // console.log(body);
   // validate the data coming in is correct
   // NOTE - typically use a forEach. But because we need to return from the async function,
   // using a forEach would create another function scope. You cannot return from an inner scope
@@ -71,6 +94,16 @@ exports.handler = async (event, context) => {
         }),
       };
     }
+  }
+
+  // make sure they actually have items in that order
+  if (!body.order.length) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        message: `Order a pizza, dog`,
+      }),
+    };
   }
 
   // Tip - always use example.com if you are filling in a dummy email address

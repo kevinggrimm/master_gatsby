@@ -31,6 +31,7 @@ export default function OrderPage({ data }) {
   const { values, updateValues } = useForm({
     name: '',
     email: '',
+    pestoSauce: '',
   });
   const pizzas = data.pizzas.nodes;
   // Import the custom hook we made for order-related actions
@@ -52,11 +53,12 @@ export default function OrderPage({ data }) {
     return <p>{message}</p>;
   }
 
+  //
   return (
     <>
       <SEO title="Order a Pizza!" />
       <OrderStyles onSubmit={submitOrder}>
-        <fieldset>
+        <fieldset disabled={loading}>
           <legend>Your Info</legend>
           <label htmlFor="name">Name</label>
           <input
@@ -74,8 +76,16 @@ export default function OrderPage({ data }) {
             value={values.email}
             onChange={updateValues}
           />
+          <input
+            type="pestoSauce"
+            name="pestoSauce"
+            id="pestoSauce"
+            value={values.pestoSauce}
+            onChange={updateValues}
+            className="pestoSauce"
+          />
         </fieldset>
-        <fieldset className="menu">
+        <fieldset disabled={loading} className="menu">
           <legend>Menu</legend>
           {pizzas.map((pizza) => (
             <MenuItemStyles key={pizza.id}>
@@ -109,7 +119,7 @@ export default function OrderPage({ data }) {
             </MenuItemStyles>
           ))}
         </fieldset>
-        <fieldset className="order">
+        <fieldset disabled={loading} className="order">
           <legend>Order</legend>
           {/* Why the function has to be passed in: it is bound to the list of state. If you were to use the hook again, you would create a second set of pizzas and wouldn't be able to talk to each other */}
           <PizzaOrder
@@ -118,7 +128,7 @@ export default function OrderPage({ data }) {
             pizzas={pizzas}
           />
         </fieldset>
-        <fieldset>
+        <fieldset disabled={loading}>
           <h3>
             Your Total is {formatMoney(calculateOrderTotal(order, pizzas))}
           </h3>

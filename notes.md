@@ -1002,17 +1002,115 @@
 
 ### Overview
 
+- Making `placeOrder.js` handler take a few more seconds
+  - Can use a package caleld **wait** or write ann async function
+
+### Disabling Fieldsets during testing
+
+- Add the attribute `disabled={loading}` to each fieldset
+- This will prevent you from editing any fields while loading is set to **True**
+
 ## 43 - Creating a Honey Pot to defend against bots
 
 ### Overview
+
+- For forms that are submittable w/o bot detection, they get submitted with spam
+- Deters bots from submitting thousands per second
+- _Podcast on Syntax.FM - Hasty Treat - Forms, Captchas, Honeypots, Dealing with Malicious Users_
+- Best way to do it is to add a **CAPTCHA**
+- Other suggestionn is to add a **honeypot**
+
+### Honeypot
+
+- A field in your contact form that a user isn't supposed to fill out
+
+### Hiding the Attribute
+
+- Cant just use the `hidden` attribute - bot is smarter than that
+- Give the honeypot a _className_ of **pestoSauce**
+- Go to `OrderStyles.js`
+  - Add `display: none; to .pestoSauce { } `
+- Apparently, bots are unable to figure out if an element is visible via CSS or not (comes from ppl working on prod/client sites)
+  - Can also scale to 0 or 1 pixel, text-indent, etc
+  - Also want to make sure that you aren't throwing off screen-readers (some CSS attributes will read out loud to screen readers)
 
 ## 44 - Creating a one-off Store Settings Page
 
 ### Overview
 
+- Common thing in a site is to have a _settings_ page
+- Control everything from headlines to selecting content that you want to display on the home page
+- Otherwise known as **Option** or **One-Off** pages
+- Not going to be multiple of them, but still need to be stored in databases
+- On the home page, we want someone to be able to go into the backenda nd then be able to select:
+  - Who is currently working
+  - What pizzas are currently available by the slice
+- We want to be able to pull that into our frontend
+
+### Steps
+
+- kill sanity & restart
+- make a _schema_ for that setting
+- **NOTE:** Done the same way as any other data type
+  - Allows you to create multiple versions of a settings page
+  - But, we are going to restrict creating multiple versions by modifying the sidebar we have in the Sanity backend
+- In **Sanity**, open `schemas/pizza.js` and copy over to `storeSettings.js`
+  - Create a schema for **storeSettings**. Fields are an array that references another array, slicemasters
+  - Import storeSettings into `schema.js` and pass into the function **createSchema**
+- This will now be visible in the Sanity backend and we can create store settings
+
+### Preventing Changes to the Store Schema
+
+- We want a feature that goes directly to the single Settings file that is configured in the DB with no potential for them to make any overwrites or new Stores
+- In the **root** of your Sanity folder, create a file called `sidebar.js`
+  - Import a custom plugin for sanity in
+- Go to `sanity.json` and add the new part to the **parts** array
+
 ## 45 - Custom Hook for Client Side Data Fetching
 
 ### Overview
+
+- Pulling currently slicing pizzas + slicemasters
+- Downside of Gatsby:
+  - This data is very time sensitive
+  - Can change within a second and the website must be updated in a second
+  - Probably not best suited for running through Gatsby's GraphQL
+  - People that were slicing + pizzas availalbe are going to be those listed **UNTIL** the site is regenerated
+- There is probably a way to trigger a build, but it makes more sense to fetch this **client side** rather than at **build time**
+- Gatsby doesnt have an API
+  - There is only an API at build time
+  - No GraphQL API that we can hit after
+- Must go directly to the source of the data - from the **client side** on the browser
+  - _This is common_
+- So, we are going to build client side
+  - When you load the page, it will go and fetch the data
+
+### Steps
+
+- In **gatsby**, open up `index.js`
+- Fetching the data
+  - If we cant get it from our Gatsby GraphQL, we have to get it from Sanity
+  - To get your Sanity endpoint:
+    - Quit the process and run `sanity graphql list`
+    - This will give you a URL to your graph database
+- Difference betweenn Sanity GraphQL + Gatsby GraphQL
+  - Queries wont be exactly the same
+  - will be `allPizza` instead of `sanityallPizza`
+
+### Creating a Custom Hook
+
+- In **gatsby**, create a new file in **utils** called `useLatestData.js`
+- Create a function w/ the same name
+- **NOTE:** You need to run `sanity graphql deploy production` to add the **storeSetting** schema to your GrapQL database
+  - As soon as the data changes in the Sanity backend, the updated data will be visible in the browser (next page load)
+- Fetching the data
+
+### DEBUGGING TIP -- SyntaxError at position 0 // line 1 column 1
+
+- Means you got data back and tried to turn it into an object, but it wasn't JSON to begin with
+- **APPROACH:** Go into **Network**, look for the **XHR** request
+  - Tried to ping `undefined` as the URL when in reality we need to hit the GraphQL endpoint
+  - Likely need to restart the **gatsby** process to take into account the additional _env_ value
 
 # Module 12 - Client Side Data
 

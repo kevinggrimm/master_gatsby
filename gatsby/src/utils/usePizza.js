@@ -32,6 +32,7 @@ export default function usePizza({ pizzas, values }) {
     ]);
   }
 
+  //
   // this is the function that is run when someone submits the form
   async function submitOrder(e) {
     e.preventDefault();
@@ -39,7 +40,9 @@ export default function usePizza({ pizzas, values }) {
     setLoading(true);
     // Need to set initial error, message to be null. Later on we handle the showing/hiding of both on `order.js` above the button
     setError(null);
-    setMessage('Go eat!');
+    // NOTE -- If this is passed, it will simply display 'Go eat!' on the order.js page
+    // We dont want that for handling errors, loads, and success - set to null
+    // setMessage('Go eat!');
 
     // gather all the data
     // All of this gets sent to the backend
@@ -49,6 +52,7 @@ export default function usePizza({ pizzas, values }) {
       total: formatMoney(calculateOrderTotal(order, pizzas)),
       name: values.name,
       email: values.email,
+      pestoSauce: values.pestoSauce,
     };
     console.log(body);
 
