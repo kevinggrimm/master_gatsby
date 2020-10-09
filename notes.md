@@ -1112,11 +1112,75 @@
   - Tried to ping `undefined` as the URL when in reality we need to hit the GraphQL endpoint
   - Likely need to restart the **gatsby** process to take into account the additional _env_ value
 
+### CORS Issue - Accessing the GraphQL Endpoint
+
+- In order to go to the graphQL endpoint from a URL, you have to allow that URL in Sanity
+- Go to **sanity.io** --> Login --> Project --> Settings --> API
+  - **CORS Origins** --> Hosts that can connect to the project API are limited to _http://localhost:3333_
+  - Add a new origin `http://localhost:*`
+  - Allow credentials
+  - Add new origin
+- This will return the data to the API
+
+### Setting API data to the state
+
+- In `useLatestData.js`:
+  - Set the state of **hotSlices** and **slicemasters** to the API results with `setHotSlices` and `setSlicemasters`
+- Now, we want to confirm that this is being set to state
+  - In `index.js`, log the results and confirm that the state is updated
+- **NOTE:** When checking the console you will see the `Object` is output three times:
+  - First output is the initial state, which has undefined values
+  - Second output is the updated state from the first `setState` function executed from `useEffect`
+  - Third output is the updated state from the second `setstate` function
+  - **No performance impact** to update the state twice
+- Take the Data and Pass it into components
+
 # Module 12 - Client Side Data
 
 ## 46 - Creating a Skeleton Screen while Loading Items
 
+### Overview
+
+- Going to use several grids
+- Wes prefers to put all grids into separate files
+- In **styles**, create new file **Grids.js**
+
+### Loading Itmems
+
+- Because the page loads once you actually load the page, we need something to put there to indicate something is happening
+- In `Grids.js`, create a new component called **IemsGrid**
+- Add another component called **LoadingGrid** to hold the items
+- On `index.js`, add the **LoadingGrid** to each component (_slicemasters_ and _hotSlices_)
+  - Mapping over the **count** prop and creating both `<p>` and `<img>` elements for the page load
+  - Getting an image placeholder while the image loads
+- In `Grid.js`, adding styles for a single grid item
+
+### Conditionally Show Loading While in Loading State
+
+- Go to `index.js`
+
 ## 47 - Displaying the Home Page Data
+
+### Overview
+
+- Need to amend GraphQL query to get more data
+- **TIP** If you add `gql` in front of a graphql query (as a string), VSCode will auto format it for you + do syntax highlighting
+- **PROBLEM:** We aren't importing a graphQL library into our frontend - isnt necessary
+  - _But_, we can fake out VSCODE
+  - Create a tag **gql** and assign to `String.raw;` in `useLatestDatajs`
+  - Good for syntax highlighting w/o importing a library
+- Add more content to query in `useLatestData.js`
+
+### DEBUGGING - Cannot access property "StoreSettings"
+
+- Happens when something goes wrong with the fetch request
+- Didnt _catch_ the error --> go back to `useLatestData` and catch the error
+
+### Getting Data onto the Page + Styling
+
+- Passing **slicemasters** and **hotSlices** into a component **ItemGrid**
+- Create new component `ItemGrid.js` in **components**
+- Add a `.tilt {}` style to the `GlobalStyles.js`
 
 # Module 13 - Building, Deployment and Responsive Design
 

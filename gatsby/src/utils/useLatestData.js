@@ -1,5 +1,18 @@
 import { useState, useEffect } from 'react';
 
+const gql = String.raw;
+const zas = gql`
+    name
+    _id
+    image {
+      asset {
+        url
+        metadata {
+          lqip
+        }
+      }
+    }
+`;
 // when this hook runs:
 // 1. create two pieces of state
 // 2. run fetch
@@ -27,16 +40,24 @@ export default function useLatestData() {
       },
       // object has the query inside of it. We cant just pass it as "query {...}"
       // the data has to be a string, so we stringify it
+      // not using Gatsby-image (outside of gatsby image)
+      // you can probably query the parts you need from Gatsby image, but sometimes there is a use case
+      // where you want to grab the parts yourself and use a regular image tag
+      // ==> Going to be using a property called "lqip" ==> low quality imageg placeholder
+      // NOTE --> It is _id instead of id because we are querying Sanity directly
+
+      // TIP ==> Pass identical graphQL components into a template string and iterpolate them
+
       body: JSON.stringify({
-        query: `
+        query: gql`
           query {
             StoreSettings(id: "downtown") {
               name
               slicemaster {
-                name
+                ${zas}
               }
               hotSlices {
-                name
+                ${zas}
               }
             }
           }
@@ -47,7 +68,13 @@ export default function useLatestData() {
       .then((res) => {
         // TODO: Check for errors
         // set the data to state
-        console.log(res.data);
+        setHotSlices(res.data.StoreSettings.hotSlices);
+        setSlicemasters(res.data.StoreSettings.slicemaster);
+      })
+      // catch the error
+      .catch((err) => {
+        console.log('WHOOPS');
+        console.log(err);
       });
   }, []);
   // return the two pieces of state
