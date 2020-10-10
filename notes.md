@@ -1186,10 +1186,98 @@
 
 ## 48 - Building and Deploying our Headless Sanity CMS
 
+### Overview
+
+- Backend Deployment
+  - Need the entire Sanity CMS to be online somewhere
+  - **Santiy Studios** has been our backend and you can host it directly on Sanity
+    - `sanity deploy`
+    - _Studio Name:_ Enter a hostname
+    - **NOTE:** You need a `static` folder in Sanity for this to work
+  - You can also **host it yourself**
+    - `sanity` --> `dist`
+    - If you wanted to host it yourself, you can use these files
+    - Just add the domain name to the allowed API routes
+  - Wes suggests hosting on Sanity
+
 ## 49 - Building our Gatsby Site
+
+### Overview
+
+- Remember, Gatsby is just a static site generator
+- To generate the JS, execute `npm run build`, which will run `gatsby build`
+- Can take anywhere from 15-20S up to 15 minutes
+  - If you have images that need to be resized on build time, that is what causes a lot of time
+  - (Wes' personal site takes ~15 min to build w/ 500 images)
+- Sanity or any other image hosting service does image resizing on their side
+
+### Reviewing the Public Folder
+
+- Gatsby --> public will contain all of the pages that you need
+- There are a few options for hosting (to cover next)
 
 ## 50 - Deploying to Netlify
 
+### Overview
+
+- **Netflify** is the most popular option
+  - Takes care of making the website fast to load + hosting
+  - Will also do the build for you
+    - Can be triggered from _(1)_ changes in data to sanity _(2)_ changes to Git repo
+  - _Also host serverless functions_
+- Create an account on Netlify
+- Go to _New site from Git_
+- Connect to Git provider
+  - Add site to GitHub
+    - _(You can either put the Gatsby folder or Gatsby + Sanity)_
+  - Initialize git with `git init`
+  - Add `.gitignore` contents (can drop in generic contents from Wes' repo)
+  - Push contents
+- You can allow **all** access to Git repos or a single one
+- Select _Branch to deploy_
+- **Build command:** `npm run build`
+- **Publish directory:** `gatsby/public`
+
+### Additional Steps
+
+- Won't work immediately
+- Sanity will look in main repo for your site - _not_ in the `gastby` subdirectory
+  - Option didn't seem to be available when deploying the site
+- Now go back to **Site settings** --> **Build & deploy** --> **edit settings**
+  - **Base directory:** Directory to change to before starting a build. This is where we will look for package.json/.nvmrc/etc.
+    - Set to `gastby`
+  - **Publish directory:** Set to `gatsby/ public`
+- Now, go back to **Site Overview** --> **Production deploys**
+  - **TIP:** If you are ever having trouble with your deploy, choose _Clear cache and deploy site_
+    - _Deploy site_ will just use the currently cached items
+- This will run the same process that we did
+
+### Passing in Environment Variables
+
+- Our site won't load properly because our environment variables are **not** in Git
+- Go to **Deploy Settings** --> **Environment** --> **Environment variables**
+  - Move variables into page
+  - `GATSBY_HOT_RELOADER` isnt necessary -- only for development
+  - `GATSBY_SERVERLESS_BASE` is no longer going to be `locahost`
+    - Instead, you can use a **relative path**
+    - \*This is fine because Netliffy always runs the site on a new domain / sub domain
+- Double check to remove any `console.log` statements for a production website
+
+### CORS Issue with New Site
+
+- Because it is now hosted on Netlify, Sanity is not going to allow `fetch` requests
+- Login to `Sanity.io` --> go to project --> API --> **Add new CORS origin**
+  - Add the domain name for your site
+  - You can either put the entire domain name **or** `\*.
+
 ## 51 - Hosting the Gatsby Website on your own server
 
+### Overview
+
+-
+
 ## 52 - Making the Website Responsive
+
+### Overview
+
+-
