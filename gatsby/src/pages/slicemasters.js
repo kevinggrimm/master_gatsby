@@ -53,6 +53,7 @@ const SlicemasterStyles = styled.div`
 //
 export default function SlicemastersPage({ data, pageContext }) {
   const slicemasters = data.slicemasters.nodes;
+  console.log(slicemasters);
   return (
     <>
       <SEO title={`Slicemasters - Page ${pageContext.currentPage || 1}`} />
@@ -65,7 +66,7 @@ export default function SlicemastersPage({ data, pageContext }) {
       />
       <SlicemasterGrid>
         {slicemasters.map((person) => (
-          <SlicemasterStyles>
+          <SlicemasterStyles key={person.id}>
             <Link to={`/slicemasters/${person.slug.current}`}>
               <h2>
                 <span className="mark">{person.name}</span>
@@ -79,7 +80,6 @@ export default function SlicemastersPage({ data, pageContext }) {
     </>
   );
 }
-
 // Modifying to create variables
 // Any context specified in createPage is automatically created in your graphql query - IF you specify it in your query
 // Query is set up to accept variables. Can now pass these to graphql
